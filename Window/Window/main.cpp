@@ -1,6 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Window.h"
+#include "Color.h"
 
 int main(int argc, char** argv){
 	
@@ -17,8 +19,8 @@ int main(int argc, char** argv){
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/*Create a Window*/
-	const std::string windowTitle{ "Doom 3D" };
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, windowTitle.c_str(), nullptr, nullptr);
+	Window winProperties{ 1920,1080,"Doom 3D" };
+	GLFWwindow* window = glfwCreateWindow(winProperties.Width(),winProperties.Height(),winProperties.Title(), nullptr, nullptr);
 	if (window == NULL) {
 		std::cout << "Failed to create window" << std::endl;
 		glfwTerminate();
@@ -33,18 +35,33 @@ int main(int argc, char** argv){
 	gladLoadGL();
 
 	/*Tell OpenGL about our viewPort*/
-	glViewport(0, 0, 1920, 1080);
+	glViewport(0, 0, winProperties.Width(),winProperties.Height());
 
 	/*Tell OpenGL to clear the Back Buffer colors*/
-	glClearColor(0.7f, 10.0f, 200.0f, 1.0f);
+	Color skyColor{ 0.7f, 10.0f, 200.0f, 0.5f };
+	Color brownishColor{ 200.0f, 10.0f, 0.7f, 1.0f };
+	glClearColor(skyColor.Red(),skyColor.Green(),skyColor.Blue(),skyColor.Alpha());
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	/*swap the buffers*/
 	glfwSwapBuffers(window);
 
+	bool toggle = true;
 	while (!glfwWindowShouldClose(window)){
 		/*poll for events*/
 		glfwPollEvents();
+		
+		if (toggle) {
+			glClearColor(skyColor.Red(), skyColor.Green(), skyColor.Blue(), skyColor.Alpha());
+			glClear(GL_COLOR_BUFFER_BIT);
+			toggle = false;
+		}
+		else {
+			glClearColor(brownishColor.Red(), brownishColor.Green(), brownishColor.Blue(), brownishColor.Alpha());
+			glClear(GL_COLOR_BUFFER_BIT);
+			toggle = true;
+		}
+		glfwSwapBuffers(window);
 	}
 	glfwDestroyWindow(window);
 
