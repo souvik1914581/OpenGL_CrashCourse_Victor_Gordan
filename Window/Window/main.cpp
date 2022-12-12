@@ -46,22 +46,20 @@ int main(int argc, char** argv){
 	/*swap the buffers*/
 	glfwSwapBuffers(window);
 
-	bool toggle = true;
+	const auto& startTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window)){
 		/*poll for events*/
 		glfwPollEvents();
 		
-		if (toggle) {
-			glClearColor(skyColor.Red(), skyColor.Green(), skyColor.Blue(), skyColor.Alpha());
+		const int elapsedTime = (int)(glfwGetTime() - startTime);
+		const bool shouldSwap = (elapsedTime > 0);
+		if (shouldSwap) {
+			const int vibGyorIndex = elapsedTime % 7;
+			const Color& color = vibGyor[vibGyorIndex];
+			glClearColor(color.Red(), color.Green(), color.Blue(), color.Alpha());
 			glClear(GL_COLOR_BUFFER_BIT);
-			toggle = false;
+			glfwSwapBuffers(window);
 		}
-		else {
-			glClearColor(brownishColor.Red(), brownishColor.Green(), brownishColor.Blue(), brownishColor.Alpha());
-			glClear(GL_COLOR_BUFFER_BIT);
-			toggle = true;
-		}
-		glfwSwapBuffers(window);
 	}
 	glfwDestroyWindow(window);
 
